@@ -10,11 +10,11 @@ function getSystemData() {
 async function monitorSystemData() {
 	const data = await getSystemData();
 	fs.writeFileSync('/var/log/system-data.json', JSON.stringify(data));
-	setTimeout(monitorSystemData, 10000);
+	setTimeout(monitorSystemData, 60 * 1000);
 }
 
 function getIptstate() {
-	return child_process.execSync('iptstate --single -l');
+	return child_process.execSync('iptstate --single');
 }
 
 function monitorIptstate() {
