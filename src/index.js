@@ -4,7 +4,7 @@ import si from 'systeminformation';
 import nmap from 'libnmap';
 
 const {
-	NMAP_RANGE = '',
+	NMAP_RANGE,
 } = process.env;
 
 
@@ -29,21 +29,19 @@ function monitorIptstate() {
 	setTimeout(monitorIptstate, 5000);
 }
 
-function nmapDiscover() {
-	const opts = {
-		timeout: 1,
-		range: NMAP_RANGE.split(','),
-		flags: [
-		],
-	};
-	console.log('Nmap opts', opts);
-	return new Promise((resolve, reject) =>
-		nmap.scan(opts, (err, report) => (err) ? reject(err) : resolve(report)));
+function nmapDiscover(range) {
+	const command = `nmap -oX /var/log/nmap.xml ${range}`;
+	console.log('nmap scanning', command);
+	return new Promise(resolve =>
+		child_process.exec(command, (err, stdout) => {
+			if(err) { throw err; }
+			return resolve(stdout);
+		}));
 }
 
 async function monitorNmap() {
-	const data = await nmapDiscover();
-	fs.writeFileSync('/var/log/nmap.json', JSON.stringify(data));
+	await nmapDiscover(NMAP_RANGE);
+	console.log('Nmap scan finished');
 	setTimeout(monitorNmap, 5000);
 }
 
