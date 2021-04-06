@@ -16,6 +16,6 @@
     "@babel/cli": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
     "libnmap": "^0.4.16",
-    "systeminformation": "^3.49.2"
+    "systeminformation": "^5.6.4"
   }
 }
